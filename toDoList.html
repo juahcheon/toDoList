@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="https://hangeul.pstatic.net/hangeul_static/css/nanum-square-neo.css" rel="stylesheet">
+
+    <!-- jquery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+
+    <style>
+        * {padding: 0; margin: 0; border: 0;}
+
+        .wrap {
+            width: 100%;
+            height: 100vh;
+            background: url(img/bg_02.jpeg);
+            background-size: cover;
+            position: relative;
+        }
+        .inner {
+            width: 30%;
+            height: 30%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%,-50%);
+        }
+        .clock_wrap {
+            width: 100%;
+            height: 60%;
+        }
+        .clock {
+            font-size: 10vw;
+            vertical-align: top;
+            font-family: 'NanumSquareNeoExtraBold';
+            text-align: center;
+            color: #fff;
+        }
+        .toDo_wrap {
+            width: 100%;
+            height: 20%;
+            position: absolute;
+            bottom: 0;
+        }
+        .toDo_wrap input {
+            width: 100%;
+            height: 100%;
+            background: transparent;
+            border-bottom: 4px solid #fff;
+            color: #fff;
+            font-size: 30px;
+        }
+        .toDo_wrap input:focus {outline: 2px solid #d50000;}
+        .toDo_wrap input:focus {outline: none;}
+        .toDo_wrap input::placeholder {color:#fff;}
+        .toDo_wrap input::-webkit-input-placeholder {color:#fff;}
+        .toDo_wrap input:-ms-input-placeholder {color:#fff;}
+
+
+    
+        .toDo_list {
+            width: 100%;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            margin-top: 10px;
+            background-color: #fff;
+        }
+
+        .check_box {
+            width: 50px;
+            height: 100%;
+            background-color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: 1px solid #eee;
+            box-sizing: border-box;
+        }
+        .check_box input {
+            width: 30%;
+            height: 30%;
+            border: 0;
+        }
+        .toDo_text {
+            margin-left: 20px;
+            font-size: 23px;
+        }
+        .close_btn {
+            width: 30px;
+            height: 55%;
+            background-color: slateblue;
+            font-weight: bold;
+            color: #fff;
+            font-size: 20px;
+            right: 10px;
+            position: absolute;
+            border-radius: 30%;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="wrap">
+        <div class="inner">
+            <div class="clock_wrap">
+                <div class="clock"></div>
+            </div>
+            <div class="toDo_wrap">
+                <input class="keyup" type="text" placeholder="Write to do!" onkeyup='saveValue(this);'>
+                <ul class="toDo_list_wrap">
+                    <li class="toDo_list">
+                        <div class="check_box">
+                            <input class="check_btn" type="checkbox">
+                        </div>
+                        <div class="toDo_text"></div>
+                        <button type="button" class="close_btn">X</button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    $(function(){
+        // 시계 이벤트
+        var time = new Date;
+        var nowHour = time.getHours();
+        var nowMin = time.getMinutes();
+        var clockBox = $(".clock");
+        var clockEnd = "3";
+        
+        console.log();
+        clockBox.text( String(nowHour).padStart(2,"0") + ":" + String(nowMin).padStart(2,"0") );
+
+        // 엔터키 이벤트
+        
+        $(".toDo_list_wrap").hide();
+        $(".keyup").on("keyup",function(key){
+            if(key.keyCode==13) {
+                $(".toDo_list_wrap").show();
+                $(".toDo_text").text($(".keyup").val());
+            }
+            
+        });
+
+        // 체크박스 이벤트
+        $(".check_btn").on("change", function(){
+            if($(".check_btn").is(":checked")){
+                $(".toDo_text").css("text-decoration", "line-through")
+            }else{
+                $(".toDo_text").css("text-decoration", "none")
+            }
+        })
+
+        // 리스트 닫기
+        $(".close_btn").on("click", function(){
+            $(".toDo_list_wrap").hide();
+        })
+
+        // 리스트 유지하기
+         /* input에 입력된 값 로컬스토리지에 저장하기 */
+        function saveValue(e){
+            var id = e.id;
+            var val = e.value;
+            localStorage.setItem(id, val);
+        }
+        
+        /* 로컬스토리지에 저장된 값으로 input 채우기 */ 
+        function getSavedValue(v){
+            if(!localStorage.getItem(v)){
+                // 사용자가 입력하지 않았다면 defualt 값을 반환 
+                return v.value;
+            }
+            return localStorage.getItem(v);
+        }
+
+    })
+        
+    </script>
+</body>
+</html>
